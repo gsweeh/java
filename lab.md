@@ -287,21 +287,31 @@ abstract class Printer {
 
 class DotMatrix extends Printer {
     void configure() {
-        System.out.println("DotMatrix configured");
+        System.out.println("Starting DotMatrix configuration...");
+        System.out.println("Checking paper alignment...");
+        System.out.println("Setting print head position...");
+        System.out.println("DotMatrix configured successfully.");
     }
 
     void print(String text) {
+        System.out.println("Preparing DotMatrix to print...");
         System.out.println("DotMatrix print: " + text);
+        System.out.println("DotMatrix printing completed.");
     }
 }
 
 class LaserJet extends Printer {
     void configure() {
-        System.out.println("LaserJet configured");
+        System.out.println("Starting LaserJet configuration...");
+        System.out.println("Warming up laser unit...");
+        System.out.println("Calibrating toner levels...");
+        System.out.println("LaserJet configured successfully.");
     }
 
     void print(String text) {
+        System.out.println("Sending data to LaserJet...");
         System.out.println("LaserJet print: " + text);
+        System.out.println("LaserJet printing completed.");
     }
 }
 
@@ -311,34 +321,50 @@ interface Vehicle {
 
 class Car implements Vehicle {
     public void drive() {
-        System.out.println("Car is driving on road");
+        System.out.println("Starting car engine...");
+        System.out.println("Car is driving on road.");
+        System.out.println("Car reached destination.");
     }
 }
 
 class Motorcycle implements Vehicle {
     public void drive() {
-        System.out.println("Motorcycle is moving fast");
+        System.out.println("Starting motorcycle engine...");
+        System.out.println("Motorcycle is moving fast.");
+        System.out.println("Motorcycle ride completed.");
     }
 }
 
 public class Program4 {
     public static void main(String[] args) {
+
         System.out.println("--- Abstraction Demo ---");
+
         Printer p1 = new DotMatrix();
         Printer p2 = new LaserJet();
+
         p1.configure();
         p1.print("Hello");
+
+        System.out.println();
+
         p2.configure();
         p2.print("World");
 
-        System.out.println("--- Runtime Polymorphism Demo ---");
+        System.out.println("\n--- Runtime Polymorphism Demo ---");
+
         Vehicle v;
+
         v = new Car();
         v.drive();
+
+        System.out.println();
+
         v = new Motorcycle();
         v.drive();
     }
 }
+
 ```
 
 **Expected Output:**
