@@ -1033,6 +1033,83 @@ public class Program10 {
 }
 ```
 
+```
+import com.sun.net.httpserver.*;
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+public class Program10 {
+
+    static class Student {
+        int id, age;
+        String name;
+        Student(int i, String n, int a){ id=i; name=n; age=a; }
+        public String toString(){ return id+" "+name+" "+age; }
+    }
+
+    static Map<Integer,Student> db = new HashMap<>();
+
+    public static void main(String[] args) throws Exception {
+
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080),0);
+
+        server.createContext("/students", e -> {
+
+            String m = e.getRequestMethod();
+            Map<String,String> q = query(e.getRequestURI().getQuery());
+            String res="";
+
+            if(m.equals("GET")){
+                if(q.containsKey("id"))
+                    res = String.valueOf(db.get(Integer.parseInt(q.get("id"))));
+                else res = db.values().toString();
+            }
+
+            else if(m.equals("POST")){
+                db.put(Integer.parseInt(q.get("id")),
+                       new Student(Integer.parseInt(q.get("id")),
+                                   q.get("name"),
+                                   Integer.parseInt(q.get("age"))));
+                res="Added";
+            }
+
+            else if(m.equals("PUT")){
+                Student s=db.get(Integer.parseInt(q.get("id")));
+                if(s!=null){
+                    if(q.containsKey("name")) s.name=q.get("name");
+                    if(q.containsKey("age")) s.age=Integer.parseInt(q.get("age"));
+                    res="Updated";
+                }
+            }
+
+            else if(m.equals("DELETE")){
+                db.remove(Integer.parseInt(q.get("id")));
+                res="Deleted";
+            }
+
+            e.sendResponseHeaders(200,res.length());
+            e.getResponseBody().write(res.getBytes());
+            e.close();
+        });
+
+        server.start();
+        System.out.println("Server Started");
+    }
+
+    static Map<String,String> query(String q){
+        Map<String,String> map=new HashMap<>();
+        if(q==null) return map;
+        for(String p:q.split("&")){
+            String[] a=p.split("=");
+            if(a.length==2) map.put(a[0],a[1]);
+        }
+        return map;
+    }
+}
+
+```
+
 **Expected Output:**
 ```text
 Server running at http://localhost:8080/students
