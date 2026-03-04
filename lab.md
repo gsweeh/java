@@ -1110,6 +1110,101 @@ public class Program10 {
 
 ```
 
+```java
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/students")
+public class prg10 extends HttpServlet {
+
+    static class Student {
+        int id;
+        String name;
+        int age;
+
+        Student(int id, String name, int age) {
+            this.id = id;
+            this.name = name;
+            this.age = age;
+        }
+    }
+
+    static Map<Integer, Student> DB = new HashMap<>();
+
+    // GET
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+
+        res.setContentType("text/plain");
+        PrintWriter out = res.getWriter();
+
+        String id = req.getParameter("id");
+
+        if (id == null) {
+            for (Student s : DB.values()) {
+                out.println(s.id + " " + s.name + " " + s.age);
+            }
+        } else {
+            Student s = DB.get(Integer.parseInt(id));
+
+            if (s == null)
+                out.println("Student not found");
+            else
+                out.println(s.id + " " + s.name + " " + s.age);
+        }
+    }
+
+    // POST
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+
+        int id = Integer.parseInt(req.getParameter("id"));
+        String name = req.getParameter("name");
+        int age = Integer.parseInt(req.getParameter("age"));
+
+        DB.put(id, new Student(id, name, age));
+
+        res.getWriter().println("Student Added");
+    }
+
+    // PUT
+    protected void doPut(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+
+        int id = Integer.parseInt(req.getParameter("id"));
+        Student s = DB.get(id);
+
+        if (s != null) {
+            s.name = req.getParameter("name");
+            s.age = Integer.parseInt(req.getParameter("age"));
+            res.getWriter().println("Student Updated");
+        } else {
+            res.getWriter().println("Student Not Found");
+        }
+    }
+
+    // DELETE
+    protected void doDelete(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+
+        int id = Integer.parseInt(req.getParameter("id"));
+
+        if (DB.remove(id) != null)
+            res.getWriter().println("Student Deleted");
+        else
+            res.getWriter().println("Student Not Found");
+    }
+}
+```
+
 **Expected Output:**
 ```text
 Server running at http://localhost:8080/students
